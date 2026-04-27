@@ -12,6 +12,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [rememberMe, setRememberMe] = useState(false);
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -28,7 +29,10 @@ export default function LoginPage() {
       if (authError) throw authError;
 
       if (data.user && data.session) {
-        document.cookie = `sb-access-token=${data.session.access_token}; path=/; max-age=${data.session.expires_in}; SameSite=Lax`;
+        // If Remember Me is checked, set cookie to last 30 days
+        // otherwise use the default session expiration (usually 1 hour)
+        const maxAge = rememberMe ? 30 * 24 * 60 * 60 : data.session.expires_in;
+        document.cookie = `sb-access-token=${data.session.access_token}; path=/; max-age=${maxAge}; SameSite=Lax; Secure`;
         router.push("/admin");
       }
     } catch (err: any) {
@@ -141,6 +145,8 @@ export default function LoginPage() {
             <label className="flex items-center cursor-pointer group">
               <input 
                 type="checkbox" 
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
                 className="w-3.5 h-3.5 rounded border-gray-300 text-[#2b5a9a] focus:ring-[#2b5a9a] cursor-pointer" 
               />
               <span className="ml-1.5 text-gray-500 font-bold group-hover:text-gray-700 transition-colors">Remember Me</span>
