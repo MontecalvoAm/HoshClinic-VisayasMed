@@ -17,6 +17,8 @@ export const metadata: Metadata = {
   description: "Experience modern, personal healthcare at Hosh Clinic. Book your reservation online today.",
 };
 
+import { LoadingProvider } from "@/context/LoadingContext";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -27,7 +29,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <LoadingProvider>
+          {children}
+        </LoadingProvider>
       </body>
     </html>
   );

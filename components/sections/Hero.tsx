@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { Button } from "../ui/Button";
 
 export const Hero = () => {
@@ -37,9 +38,11 @@ export const Hero = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4 w-full">
-            <Button size="lg" variant="primary" className="w-full sm:w-auto border-2 border-white transform transition hover:-translate-y-1 px-12 py-4 text-lg shadow-2xl">
-              Book a Appointment
-            </Button>
+            <Link href="/book" className="w-full sm:w-auto">
+              <Button size="lg" variant="primary" className="w-full sm:w-auto border-2 border-white transform transition hover:-translate-y-1 px-12 py-4 text-lg shadow-2xl">
+                Book a Appointment
+              </Button>
+            </Link>
           </div>
           
           {/* Trust indicators */}
