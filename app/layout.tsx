@@ -18,6 +18,7 @@ export const metadata: Metadata = {
 };
 
 import { LoadingProvider } from "@/context/LoadingContext";
+import SessionWrapper from "@/components/SessionWrapper"; // Import the new wrapper
 
 export default function RootLayout({
   children,
@@ -29,9 +30,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <LoadingProvider>
-          {children}
-        </LoadingProvider>
+        <SessionWrapper> {/* Use the SessionWrapper */}
+          <LoadingProvider>
+            {children}
+          </LoadingProvider>
+        </SessionWrapper>
       </body>
     </html>
   );

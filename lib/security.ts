@@ -1,8 +1,6 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 
 const SALT_ROUNDS = 12;
-const JWT_SECRET = process.env.JWT_SECRET || "default_secret_for_development_only";
 
 /**
  * Hashes a plain text password using bcrypt.
@@ -47,15 +45,4 @@ export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
 export function hasPermission(role: UserRole, permission: string): boolean {
   if (role === 'Super Admin' || role === 'Admin') return true;
   return ROLE_PERMISSIONS[role]?.includes(permission) || false;
-}
-
-/**
- * Verify a JWT token and return session data.
- */
-export function verifyToken(token: string): UserSession | null {
-  try {
-    return jwt.verify(token, JWT_SECRET) as UserSession;
-  } catch (error) {
-    return null;
-  }
 }

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { signIn } from "next-auth/react"; // Import signIn from next-auth/react
 import Image from "next/image";
 import Link from "next/link";
 
@@ -21,18 +21,19 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      const { data, error: authError } = await supabase.auth.signInWithPassword({
+      // Use NextAuth's signIn method
+      const result = await signIn("credentials", {
         email,
         password,
+        redirect: false, // Don't redirect automatically so we can handle errors
       });
 
-      if (authError) throw authError;
+      if (result?.error) {
+        throw new Error(result.error);
+      }
 
-      if (data.user && data.session) {
-        // If Remember Me is checked, set cookie to last 30 days
-        // otherwise use the default session expiration (usually 1 hour)
-        const maxAge = rememberMe ? 30 * 24 * 60 * 60 : data.session.expires_in;
-        document.cookie = `sb-access-token=${data.session.access_token}; path=/; max-age=${maxAge}; SameSite=Lax; Secure`;
+      if (result?.ok) {
+        // Redirect to dashboard on success
         router.push("/admin");
       }
     } catch (err: any) {

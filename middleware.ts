@@ -1,45 +1,51 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-
-// Simple in-memory rate limiter (Note: In production with multiple instances, use Redis)
-const rateLimitMap = new Map<string, { count: number; lastReset: number }>();
+import { auth } from "@/auth";
+import { redis } from "@/lib/redis"; // Import redis client
+import logger from "@/lib/logger"; // Import the logger
 
 const RATE_LIMIT_THRESHOLD = 5; // 5 requests
-const RATE_LIMIT_WINDOW = 60000; // 1 minute
+const RATE_LIMIT_WINDOW = 60; // 1 minute in seconds for Redis expiry
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Protect Admin routes
+  // Protect Admin routes with RBAC (existing logic)
   if (pathname.startsWith("/admin")) {
-    const sessionCookie = request.cookies.get("sb-access-token")?.value;
-    
-    if (!sessionCookie) {
-      // Redirect to login if not authenticated
+    const session = await auth();
+
+    if (!session || !session.user) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+
+    if (session.user.role !== 'Admin' && session.user.role !== 'Super Admin') {
+      logger.warn({ user: session.user.email, role: session.user.role, path: pathname }, `Unauthorized access attempt to /admin`);
       return NextResponse.redirect(new URL("/login", request.url));
     }
   }
 
-  // Protect Reservation and Login routes with rate limiting
+  // Protect Reservation and Login routes with distributed rate limiting
   if (pathname.startsWith("/api/reservation") || pathname.startsWith("/api/auth/login")) {
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0] || "127.0.0.1";
-    const now = Date.now();
-    const rateData = rateLimitMap.get(ip) || { count: 0, lastReset: now };
+    const key = `rate_limit:${ip}`;
 
-    if (now - rateData.lastReset > RATE_LIMIT_WINDOW) {
-      rateData.count = 1;
-      rateData.lastReset = now;
-    } else {
-      rateData.count++;
-    }
+    try {
+      // Increment the counter for the IP. Set expiry if it's a new key.
+      const [count, _] = await redis.multi()
+        .incr(key)
+        .expire(key, RATE_LIMIT_WINDOW)
+        .exec();
 
-    rateLimitMap.set(ip, rateData);
-
-    if (rateData.count > RATE_LIMIT_THRESHOLD) {
-      return NextResponse.json(
-        { error: "Too many requests. Please try again later." },
-        { status: 429 }
-      );
+      if (typeof count === 'number' && count > RATE_LIMIT_THRESHOLD) {
+        return NextResponse.json(
+          { error: "Too many requests. Please try again later." },
+          { status: 429 }
+        );
+      }
+    } catch (error) {
+      logger.error({ error, ip, key }, "Rate limiting with Redis failed");
+      // In case of Redis error, decide if you want to fail open (allow request) or fail closed (deny request).
+      // For now, fail open to avoid blocking legitimate users if Redis is down.
     }
   }
 

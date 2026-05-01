@@ -10,10 +10,12 @@ export default function MarketingLayout({
 }) {
   const pathname = usePathname();
   const isLoginPage = pathname === "/login";
+  
+  const headerVariant = pathname === '/' ? 'transparent' : 'solid';
 
   return (
     <>
-      {!isLoginPage && <Header />}
+      {!isLoginPage && <Header variant={headerVariant} />}
       {children}
     </>
   );

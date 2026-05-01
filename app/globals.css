@@ -2,7 +2,7 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1e293b; /* Deep Slate for better readability */
 }
 
 @theme inline {
@@ -11,26 +11,67 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
+  /* Refined Brand Colors */
   --color-brand-primary: #2b5597;
   --color-brand-secondary: #416ba9;
-  --color-brand-accent: #f32735;
-  --color-brand-success: #a2d45e;
-  --color-brand-neutral: #c4beb6;
-
+  --color-brand-accent: #ef4444; /* Standard medical red */
+  --color-brand-success: #10b981; /* Standard emerald success */
+  --color-brand-warning: #f59e0b;
+  --color-brand-neutral: #f8fafc;
+  
+  /* Radii */
   --radius-xl: 1rem;
   --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
+  
+  /* Shadows */
+  --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 10px -1px rgba(0, 0, 0, 0.03);
+  --shadow-premium: 0 20px 40px -1px rgba(0, 0, 0, 0.07);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0f172a;
+    --foreground: #f1f5f9;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-  @apply selection:bg-brand-primary selection:text-white;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  @apply selection:bg-brand-primary/20 selection:text-brand-primary;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer utilities {
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-soft;
+  }
+  
+  .glass-header {
+    @apply bg-white/60 backdrop-blur-lg border-b border-zinc-200/50 sticky top-0 z-50;
+  }
+
+  .mesh-gradient {
+    background-color: #2b5597;
+    background-image: 
+      radial-gradient(at 0% 0%, hsla(217, 56%, 38%, 1) 0, transparent 50%), 
+      radial-gradient(at 50% 0%, hsla(217, 45%, 46%, 1) 0, transparent 50%), 
+      radial-gradient(at 100% 0%, hsla(217, 35%, 54%, 1) 0, transparent 50%), 
+      radial-gradient(at 0% 50%, hsla(217, 56%, 38%, 1) 0, transparent 50%), 
+      radial-gradient(at 100% 50%, hsla(217, 45%, 46%, 1) 0, transparent 50%), 
+      radial-gradient(at 0% 100%, hsla(217, 35%, 54%, 1) 0, transparent 50%), 
+      radial-gradient(at 50% 100%, hsla(217, 56%, 38%, 1) 0, transparent 50%), 
+      radial-gradient(at 100% 100%, hsla(217, 45%, 46%, 1) 0, transparent 50%);
+    background-size: 200% 200%;
+    animation: mesh 15s ease infinite;
+  }
+
+  @keyframes mesh {
+    0% { background-position: 0% 0%; }
+    50% { background-position: 100% 100%; }
+    100% { background-position: 0% 0%; }
+  }
 }
