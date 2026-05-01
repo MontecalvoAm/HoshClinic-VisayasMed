@@ -1,0 +1,52 @@
+# HoshClinic/.github/workflows/main.yml
+name: CI/CD HoshClinic
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: 'HoshClinic/package-lock.json' # Adjust if your lock file is elsewhere
+
+    - name: Install dependencies
+      working-directory: HoshClinic # Run commands in the HoshClinic directory
+      run: npm install
+
+    - name: Run ESLint
+      working-directory: HoshClinic
+      run: npm run lint
+
+    - name: Run tests
+      working-directory: HoshClinic
+      run: npm run test
+
+    - name: Build Next.js application
+      working-directory: HoshClinic
+      run: npm run build
+      env:
+        # These need to be set for the build to succeed.
+        # Replace with your actual environment variables or secrets.
+        NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+        # If your auth.ts uses process.env.SUPABASE_SERVICE_ROLE_KEY, add it here too
+        # SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} 
+        # Add any other required build-time environment variables

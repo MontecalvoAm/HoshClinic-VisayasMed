@@ -6,67 +6,82 @@ import { Button } from "../ui/Button";
 
 export const Hero = () => {
   return (
-    <section className="relative h-screen min-h-[700px] flex items-center overflow-hidden">
-      {/* Background Image with Parallax effect (Simplified) */}
-      <div 
-        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 hover:scale-105"
-        style={{ backgroundImage: "url('/background.png')" }}
-      />
+    <section className="relative h-screen min-h-[800px] flex items-center overflow-hidden bg-white">
+      {/* Premium Background Elements */}
+      <div className="absolute top-0 left-0 w-full h-full mesh-gradient opacity-60"></div>
       
-      {/* Modern Overlay - Depth & Legibility Enhancement */}
-      <div className="absolute inset-0 z-10 bg-black/30 md:bg-transparent" />
-      <div className="absolute inset-0 z-10 bg-gradient-to-b from-brand-primary/70 via-brand-primary/20 to-brand-primary/70" />
-      
-      {/* Badge: Top Left Corner */}
-      <div className="absolute top-28 left-6 md:left-12 z-30">
-        <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-md rounded-full px-4 py-1.5 border border-white/20 shadow-lg">
-          <span className="flex h-2 w-2 rounded-full bg-brand-success animate-pulse" />
-          <span className="text-white text-xs font-semibold tracking-wide uppercase">Now accepting online reservations</span>
-        </div>
-      </div>
+      {/* Decorative Floating Elements */}
+      <div className="absolute top-[10%] right-[5%] w-96 h-96 bg-brand-primary/5 rounded-full blur-[100px] animate-pulse"></div>
+      <div className="absolute bottom-[10%] left-[5%] w-80 h-80 bg-brand-success/5 rounded-full blur-[80px]"></div>
 
-      {/* Content */}
-      <div className="container mx-auto px-6 relative z-20 flex flex-col items-center justify-center text-center">
-        <div className="max-w-5xl flex flex-col items-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-6 whitespace-nowrap drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
-            Compassionate <span className="text-brand-success underline decoration-brand-success/40 underline-offset-8">Care</span> for Your Health.
+      <div className="container mx-auto px-10 relative z-20">
+        <div className="max-w-4xl">
+          {/* Badge */}
+          <div className="inline-flex items-center space-x-3 bg-white/40 backdrop-blur-xl rounded-full px-5 py-2 border border-white/60 shadow-soft mb-10 animate-in fade-in slide-in-from-top-4 duration-700">
+            <span className="flex h-2.5 w-2.5 rounded-full bg-brand-success animate-pulse shadow-[0_0_12px_rgba(16,185,129,0.5)]" />
+            <span className="text-zinc-500 text-[10px] font-black tracking-[0.2em] uppercase">Now accepting online appointments</span>
+          </div>
+
+          <h1 className="text-6xl md:text-8xl lg:text-[7.5rem] font-black text-zinc-900 leading-[0.85] tracking-[-0.05em] mb-12 animate-in fade-in slide-in-from-left-8 duration-1000 delay-150">
+            Medical <br />
+            <span className="text-brand-primary">Precision.</span> <br />
+            Human Care.
           </h1>
           
-          <p className="text-xl md:text-2xl text-white font-medium mb-10 leading-relaxed max-w-3xl drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]">
-            Providing expert medical services with a personal touch. 
-            Experience healthcare that prioritizes your comfort and recovery.
+          <p className="text-xl md:text-2xl text-zinc-500 font-medium mb-16 leading-relaxed max-w-2xl animate-in fade-in slide-in-from-left-8 duration-1000 delay-300">
+            Experience healthcare redefined through world-class technology and a personal commitment to your long-term wellness.
           </p>
           
-          <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4 w-full">
+          <div className="flex flex-col sm:flex-row items-center space-y-5 sm:space-y-0 sm:space-x-6 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500">
             <Link href="/book" className="w-full sm:w-auto">
-              <Button size="lg" variant="primary" className="w-full sm:w-auto border-2 border-white transform transition hover:-translate-y-1 px-12 py-4 text-lg shadow-2xl">
-                Book a Appointment
+              <Button size="lg" variant="primary" className="w-full sm:w-auto !px-12 !py-6 text-base tracking-widest uppercase shadow-premium">
+                Book an Appointment
+              </Button>
+            </Link>
+            <Link href="/services" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto !px-12 !py-6 text-base tracking-widest uppercase">
+                Our Services
               </Button>
             </Link>
           </div>
           
-          {/* Trust indicators */}
-          <div className="mt-20 flex items-center justify-center space-x-8 md:space-x-20 text-white/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]">
-            <div className="flex flex-col items-center">
-              <div className="text-3xl md:text-4xl font-bold">15k+</div>
-              <div className="text-xs font-bold uppercase tracking-widest opacity-80">Happy Patients</div>
-            </div>
-            <div className="h-12 w-px bg-white/30" />
-            <div className="flex flex-col items-center">
-              <div className="text-3xl md:text-4xl font-bold">40+</div>
-              <div className="text-xs font-bold uppercase tracking-widest opacity-80">Medical Experts</div>
-            </div>
-            <div className="h-12 w-px bg-white/30" />
-            <div className="flex flex-col items-center">
-              <div className="text-3xl md:text-4xl font-bold">24/7</div>
-              <div className="text-xs font-bold uppercase tracking-widest opacity-80 text-brand-success">Emergency Care</div>
-            </div>
+          {/* Stats Bar */}
+          <div className="mt-24 pt-12 border-t border-zinc-100 flex flex-wrap gap-12 md:gap-24 animate-in fade-in duration-1000 delay-700">
+            {[
+              { val: "15k+", label: "Patients Served" },
+              { val: "40+", label: "Medical Experts" },
+              { val: "24/7", label: "Urgent Care" },
+            ].map((stat) => (
+              <div key={stat.label} className="space-y-2">
+                <div className="text-3xl font-black text-zinc-900 tracking-tighter">{stat.val}</div>
+                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">{stat.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
       
-      {/* Decorative side shape */}
-      <div className="absolute top-0 right-0 w-1/3 h-full bg-brand-primary/10 backdrop-blur-3xl -skew-x-12 transform translate-x-1/2 hidden lg:block" />
+      {/* Hero Visual Element (Glass Card Effect) */}
+      <div className="absolute right-[-5%] top-1/2 -translate-y-1/2 w-[45%] h-[70%] hidden lg:block animate-in fade-in slide-in-from-right-20 duration-1000 delay-300">
+        <div className="w-full h-full glass-card rounded-[4rem] border border-white/40 shadow-premium flex items-center justify-center relative overflow-hidden">
+           <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 to-transparent"></div>
+           {/* Mock Medical UI inside the glass card */}
+           <div className="relative z-10 w-full p-20 space-y-12">
+              <div className="flex items-center space-x-6">
+                <div className="w-20 h-20 bg-brand-primary rounded-3xl shadow-premium"></div>
+                <div className="space-y-3">
+                   <div className="w-48 h-4 bg-zinc-900 rounded-full"></div>
+                   <div className="w-32 h-3 bg-zinc-200 rounded-full"></div>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-8">
+                 {[1,2,3,4].map(i => (
+                   <div key={i} className="h-32 bg-white/50 rounded-3xl border border-white/60"></div>
+                 ))}
+              </div>
+           </div>
+        </div>
+      </div>
     </section>
   );
 };

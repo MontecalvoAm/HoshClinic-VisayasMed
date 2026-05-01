@@ -81,36 +81,57 @@ export async function getLookups(group: string) {
 /**
  * Updates a patient's information.
  */
-export async function updatePatient(patientID: string, data: any) {
+export async function updatePatient(patientId: string, data: any) {
   try {
+    // 1. Fetch all relevant lookup data
+    const { data: lookups, error: lError } = await supabase
+      .from("M_ReferenceTableStatus")
+      .select("ReferenceID, ReferenceValue, ReferenceGroup")
+      .in("ReferenceGroup", ["GENDER", "BLOOD_TYPE", "CIVIL_STATUS"])
+      .eq("IsDeleted", 0);
+
+    if (lError) {
+      throw new Error(`Error fetching lookups: ${lError.message}`);
+    }
+
+    // 2. Create a reverse lookup map for quick access
+    const lookupMap = (lookups || []).reduce((acc: any, item: any) => {
+      if (!acc[item.ReferenceGroup]) {
+        acc[item.ReferenceGroup] = {};
+      }
+      acc[item.ReferenceGroup][item.ReferenceValue] = item.ReferenceID;
+      return acc;
+    }, {});
+
+    // 3. Map form data to database schema, converting string values to IDs
+    const patientData = {
+      FirstName: data.first_name,
+      LastName: data.last_name,
+      MiddleName: data.middle_name,
+      DateOfBirth: data.birth_date,
+      GenderID: lookupMap["GENDER"]?.[data.gender],
+      CivilStatusID: lookupMap["CIVIL_STATUS"]?.[data.civil_status],
+      BloodTypeID: lookupMap["BLOOD_TYPE"]?.[data.blood_type],
+      Address: data.address,
+      PhoneNumber: data.contact_number,
+      UpdatedAt: new Date().toISOString(),
+    };
+
+    // 4. Perform the update
     const { error } = await supabase
-      .from('M_Patients')
-      .update({
-        FirstName: data.firstName,
-        LastName: data.lastName,
-        MiddleName: data.middleName,
-        DateOfBirth: data.dob,
-        GenderID: data.genderID,
-        CivilStatusID: data.civilStatusID,
-        BloodTypeID: data.bloodTypeID,
-        PhoneNumber: data.phone,
-        Email: data.email,
-        Address: data.address,
-        City: data.city,
-        StateProvince: data.state,
-        PostalCode: data.postalCode,
-        Occupation: data.occupation,
-        UpdatedAt: new Date().toISOString()
-      })
-      .eq('PatientID', patientID);
+      .from("M_Patients")
+      .update(patientData)
+      .eq("PatientID", patientId);
 
-    if (error) throw error;
+    if (error) {
+      console.error("Error updating patient:", error);
+      throw error;
+    }
 
-    revalidatePath('/admin/patients');
-    revalidatePath('/admin/appointments');
+    revalidatePath("/admin/patients");
     return { success: true };
   } catch (err: any) {
-    console.error("Error updating patient:", err);
+    console.error("Error in updatePatient:", err);
     return { success: false, error: err.message };
   }
 }

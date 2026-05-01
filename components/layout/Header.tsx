@@ -4,16 +4,22 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "../ui/Button";
 
-export const Header = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
+interface HeaderProps {
+  variant?: 'transparent' | 'solid';
+}
+
+export const Header = ({ variant = 'transparent' }: HeaderProps) => {
+  const [isScrolled, setIsScrolled] = useState(variant === 'solid');
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    if (variant === 'transparent') {
+      const handleScroll = () => {
+        setIsScrolled(window.scrollY > 20);
+      };
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }
+  }, [variant]);
 
   return (
     <header
@@ -36,20 +42,22 @@ export const Header = () => {
         {/* Navigation - Right Side */}
         <nav className="flex items-center space-x-6">
           <Link
-            href="/reservation"
+            href="/services"
             className={`font-medium transition-colors hidden md:block ${isScrolled ? "text-gray-600 hover:text-brand-primary" : "text-white/90 hover:text-white"
               }`}
           >
             Services
           </Link>
           <div className="flex items-center space-x-3">
-            <Button
-              variant="outline"
-              size="sm"
-              className={!isScrolled ? "border-white text-white hover:bg-brand-primary hover:border-brand-primary" : "border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white"}
-            >
-              Reservation
-            </Button>
+            <Link href="/book">
+              <Button
+                variant="outline"
+                size="sm"
+                className={!isScrolled ? "border-white text-white hover:bg-brand-primary hover:border-brand-primary" : "border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white"}
+              >
+                Reservation
+              </Button>
+            </Link>
             <Link href="/login">
               <Button variant="primary" size="sm">
                 Login

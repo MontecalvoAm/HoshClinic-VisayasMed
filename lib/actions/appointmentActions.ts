@@ -80,13 +80,15 @@ export async function createAppointment(formData: {
       patientId = newPatient.PatientID;
     }
 
+    const appointmentDateUTC = new Date(formData.preferredDate).toISOString();
+
     // 3. Create appointment
     const { error: appError } = await supabase
       .from('T_Appointments')
       .insert([{
         PatientID: patientId,
         DoctorID: formData.doctorID || null,
-        AppointmentDate: formData.preferredDate,
+        AppointmentDate: appointmentDateUTC,
         StatusID: pendingStatusID,
         CaseTypeID: formData.caseTypeID,
         Reason: formData.reason || ""
